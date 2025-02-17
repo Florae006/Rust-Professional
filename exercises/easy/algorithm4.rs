@@ -48,29 +48,10 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
-        let mut root = self.root.as_mut();
-        while let Some(node) = root {
-            if value < node.value {
-                let mut left = node.left.as_mut();
-                match left {
-                    Some(ref mut left) => root = left.left.as_mut(),
-                    None => {
-                        left.insert(value);
-                        return;
-                    }
-                }
-            } else if value > node.value {
-                let mut right = node.right.as_mut();
-                match right {
-                    Some(ref mut right) => root = right.right.as_mut(),
-                    None => {
-                        right.insert(value);
-                        return;
-                    }
-                }
-            } else {
-                return;
-            }
+        if let Some(ref mut root) = self.root {
+            root.insert(value);
+        } else {
+            self.root = Some(Box::new(TreeNode::new(value)));
         }
     }
 
@@ -79,19 +60,16 @@ where
         //TODO
         let mut root = self.root.as_ref();
         while let Some(node) = root {
-            match node {
-                Some(ref node) => match value.cmp(&node.value) {
-                    Ordering::Less => {
-                        root = node.left.as_ref();
-                    }
-                    Ordering::Greater => {
-                        root = node.right.as_ref();
-                    }
-                    Ordering::Equal => {
-                        return true;
-                    }
-                },
-                None => return false,
+            match value.cmp(&node.value) {
+                Ordering::Less => {
+                    root = node.left.as_ref();
+                }
+                Ordering::Greater => {
+                    root = node.right.as_ref();
+                }
+                Ordering::Equal => {
+                    return true;
+                }
             }
         }
         false
@@ -105,16 +83,22 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
-        if value < self.value {
-            match self.left {
-                Some(ref mut left) => left.insert(value),
-                None => self.left = Some(Box::new(TreeNode::new(value))),
-            }
-        } else if value > self.value {
-            match self.right {
-                Some(ref mut right) => right.insert(value),
-                None => self.right = Some(Box::new(TreeNode::new(value))),
-            }
+        match value.cmp(&self.value){
+            Ordering::Less => {
+                if let Some(ref mut left) = self.left {
+                    left.insert(value);
+                } else {
+                    self.left = Some(Box::new(TreeNode::new(value)));
+                }
+            },
+            Ordering::Greater => {
+                if let Some(ref mut right) = self.right {
+                    right.insert(value);
+                } else {
+                    self.right = Some(Box::new(TreeNode::new(value)));
+                }
+            },
+            Ordering::Equal => {}
         }
     }
 }

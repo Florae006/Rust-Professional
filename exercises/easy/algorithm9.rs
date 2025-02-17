@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -23,7 +22,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: vec![T::default()], // 哨兵节点,实际数据从1开始
             comparator,
         }
     }
@@ -36,8 +35,31 @@ where
         self.len() == 0
     }
 
+    pub fn heapify_up(&mut self, mut idx: usize) {
+        while idx > 1 && (self.comparator)(&self.items[idx], &self.items[self.parent_idx(idx)]) {
+            let parent_idx = self.parent_idx(idx);
+            self.items.swap(idx, parent_idx);
+            idx = self.parent_idx(idx);
+        }
+    }
+
+    pub fn heapify_down(&mut self, mut idx: usize) {
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[smallest_child_idx], &self.items[idx]) {
+                self.items.swap(smallest_child_idx, idx);
+                idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
+    }
+
     pub fn add(&mut self, value: T) {
         //TODO
+        self.count += 1;
+        self.items.push(value);
+        self.heapify_up(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -45,6 +67,7 @@ where
     }
 
     fn children_present(&self, idx: usize) -> bool {
+        // 是否有子节点
         self.left_child_idx(idx) <= self.count
     }
 
@@ -58,7 +81,13 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        let right = self.right_child_idx(idx);
+        let left = self.left_child_idx(idx);
+        if right <= self.count && (self.comparator)(&self.items[right], &self.items[left]) {
+            right
+        } else {
+            left
+        }
     }
 }
 
@@ -85,7 +114,13 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        self.items.swap(1, self.count);
+        self.count -= 1;
+        self.heapify_down(1);
+        self.items.pop()
     }
 }
 
