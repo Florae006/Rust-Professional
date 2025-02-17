@@ -15,7 +15,21 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn are_anagrams(s1: String, s2: String) -> bool {
     // TODO: Implement the logic to check if two strings are anagrams
-    false // Placeholder return value
+    let mut mps1 = std::collections::HashMap::new();
+    let mut mps2 = std::collections::HashMap::new();
+    for c in s1.chars() {
+        if c.is_alphabetic() {
+            let count = mps1.entry(c.to_ascii_lowercase()).or_insert(0);
+            *count += 1;
+        }
+    }
+    for c in s2.chars() {
+        if c.is_alphabetic() {
+            let count = mps2.entry(c.to_ascii_lowercase()).or_insert(0);
+            *count += 1;
+        }
+    }
+    mps1 == mps2 
 }
 
 #[cfg(test)]
