@@ -16,22 +16,18 @@ pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
     if nums1.is_empty() || nums2.is_empty() {
         return Vec::new();
     }
-    let mut nums1 = nums1;
-    let mut nums2 = nums2;
-    nums1.sort();
-    nums2.sort();
     let mut res = Vec::new();
-    let mut i = 0;
-    let mut j = 0;
-    while i < nums1.len() && j < nums2.len() {
-        if nums1[i] == nums2[j] {
-            res.push(nums1[i]);
-            i += 1;
-            j += 1;
-        } else if nums1[i] < nums2[j] {
-            i += 1;
-        } else {
-            j += 1;
+    let mut st1 = std::collections::HashSet::new();
+    let mut st2 = std::collections::HashSet::new();
+    for n in nums1 {
+        st1.insert(n);
+    }
+    for n in nums2 {
+        st2.insert(n);
+    }
+    for n in st1 {
+        if st2.contains(&n) {
+            res.push(n);
         }
     }
     res
