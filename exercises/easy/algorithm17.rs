@@ -19,6 +19,7 @@ pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
     let mut res = Vec::new();
     let mut st1 = std::collections::HashSet::new();
     let mut st2 = std::collections::HashSet::new();
+    let mut st_res = std::collections::HashSet::new();
     for n in nums1 {
         st1.insert(n);
     }
@@ -27,9 +28,13 @@ pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
     }
     for n in st1 {
         if st2.contains(&n) {
-            res.push(n);
+            st_res.insert(n);
         }
     }
+    for n in st_res {
+        res.push(n);
+    }
+    res.sort();
     res
 }
 
